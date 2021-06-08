@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+          font-family: "Rubik", sans-serif;
+          text-align: justify;
+        }
+
+        .report-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .line-header {
+            display:flex;
+            flex-direction: column;
+            align-items:flex-start;
+            height: 25px;
+            color: #1E88E5;
+            font-weight: bold;
+        }
+
+        .prompt {
+            margin-right: 5px;
+            height: 25px;
+            display:inline-flex;
+            flex-direction: column;
+            align-items:flex-start;
+            color: #1E88E5;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .primary-prompt-margin-left {
+            margin-left: 20px;
+        }
+
+        .secondary-prompt-margin-left {
+            margin-left: 40px;
+        }
+
+        .tridary-prompt-margin-left {
+            margin-left: 60px;
+        }
+
+        .secondary-prompt {
+            margin-right: 5px;
+            height: 25px;
+            display:inline-flex;
+            flex-direction: column;
+            align-items:flex-start;
+            color: #1E88E5;
+            font-weight: 600;
+        }
+
+        .prompt-color {
+            color: #1E88E5;
+
+        }
+
+
+        .grammatical-container {
+            display:flex;
+            flex-direction:column;
+            align-items: flex-start;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        .grammatical-prompt-style {
+            color: #FF5722;
+            font-weight: 600;
+        }
+
+        .error {
+            color: #ef5350;
+            font-weight: bold;
+        }
+
+        .prompt-gap {
+            margin-top: 3px;
+            margin-bottom: 3px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+
+        .replacement-gap {
+            margin-top: 4px;
+            margin-bottom: 4px;
+            margin-left: 40px;
+        }
+
+        .index {
+            margin-right: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .suggestion-container {
+            display:flex;
+            flex-direction:column;
+            align-items: flex-start;
+            color: #4CAF50;
+            font-size: 15px;
+            margin: 10px 0;
+        }
+
+        .suggestion {
+            color: #000000;
+            font-size: 14px;
+        }
+
+        .suggestion-prompt-style {
+            color: #4CAF50;
+            font-size: 15px;
+        }
+
+        .sentence-container {
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+{{range .Lines}}
+<div class="report-container">
+    <div class="line-header">
+        <span>Line number: {{.LineIndex}}</span>
+    </div>
+    <div class = "sentence-container">
+    {{range .Matches}}
+    <div>
+        <span class="prompt primary-prompt-margin-left">Sentence: </span>{{.MatchPreString}} <span class="error">{{.ErrorString}}</span> {{.MatchPostString}}
+    </div>
+    <div class="grammatical-container">
+        <div>
+            <span class="prompt grammatical-prompt-style secondary-prompt-margin-left">Grammatical Issue: </span>{{.Reason}}
+        </div>
+        <div>
+            <span class="grammatical-prompt-style tridary-prompt-margin-left">Issue Type: </span>{{.IssueType}}
+        </div>
+        <div>
+            <span class="grammatical-prompt-style tridary-prompt-margin-left">Issue Description: </span>{{.IssueDescription}}
+        </div>
+    </div>
+
+    <div class="suggestion-container">
+        <div><span class="prompt secondary-prompt-margin-left suggestion-prompt-style">Suggestions For Correction: </span></div>
+        <div >
+        {{range .Replacements }}
+            <div class="tridary-prompt-margin-left">
+                <span class="index">{{.Index}})</span>
+                <span class="suggestion">{{.ReplacementString}}</span>
+            </div>
+            <div class = "replacement-gap"></div>
+        {{end}}
+        </div>
+    </div>
+    <br>
+    {{end}}
+    </div>
+</div>
+<br>
+<br>
+{{end}}
+</body>
+</html>

@@ -1,0 +1,213 @@
+.page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+
+
+  height: 100%;
+  margin: 0;
+
+  .select-container {
+    margin: 5px 0;
+    width: 180px;
+    height: 40px;
+  }
+
+  .buttons-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    height: 40px;
+
+    .upload-container {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+    }
+
+    margin: 5px 0;
+  }
+
+  .main-container {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+
+    height: calc(100% - 80px);
+  }
+}
+
+.textarea {
+  resize: none !important;
+}
+
+.bg-blue {
+  background: lightblue;
+}
+
+.bg-pink {
+  background-color: lightcoral;
+}
+
+.bg-blue-dark {
+  background-color: #86c5da;
+}
+
+.bg-pink-dark {
+  background-color: #eb5252;
+}
+
+.tex-syntax {
+  color: cadetblue !important;
+  background-color: #86c5da;
+}
+
+
+.card-gutter {
+  width: 20px;
+  height: 100%;
+}
+
+.ant-card-body {
+  padding: 0;
+  width: inherit;
+}
+
+
+.report-container {
+  height: 100%;
+  width: calc(50% - 20px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background: #f0f2f5;
+  overflow-y: scroll;
+}
+
+.skeleton-container {
+  margin: 10px 20px;
+  overflow-x: scroll;
+}
+
+.prompt-font-weight {
+  font-weight: bold;
+}
+
+.prompt-margin {
+  margin-right: 10px;
+}
+
+.statement {
+  font-weight: normal;
+}
+
+.collapse-container {
+  margin: 10px 0;
+}
+
+.best-suggestion-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+}
+
+.suggestion-container {
+  margin: 10px 5px;
+}
+
+.no-suggestion {
+  font-weight: normal;
+}
+
+.error-style {
+  color: #eb5252;
+  font-weight: bold;
+}
+
+
+.error-segment {
+  color: #000000;
+  background-color: lightcoral;
+  text-decoration-line: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: #eb5252;
+  border-radius: 4px;
+  height: 16px;
+  cursor: pointer;
+
+  .error-segment a {
+    :hover {
+      font-weight: bold;
+      color: white;
+    }
+  }
+}
+
+.file-preview-container {
+  position: relative;
+  flex: auto;
+  width: calc(50% - 20px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  color: black;
+  background: #f0f2f5;
+
+  overflow-x: hidden;
+  overflow-y: scroll;
+  align-items: flex-start;
+
+
+  nz-card {
+    align-items: stretch;
+
+    .line {
+      width: 100%;
+    }
+  }
+}
+
+.preview-file-lines-container {
+  margin: 10px 20px;
+}
+
+.preview-file-line-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+
+}
+
+.preview-file-line-number-style {
+  width: 20px;
+  margin-right: 10px;
+  color: #1890ff;
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.preview-file-line-style {
+  width: inherit;
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: Rubik, sans-serif;
+
+  @font-face {
+    font-family: Rubik;
+    src: url("../../../assets/fonts/Rubik.ttf");
+  }
+}
+

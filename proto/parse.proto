@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package parser;
+
+// The Parser service definition.
+service Parser {
+  // Sends a Parse Request
+  rpc Parse (ParseRequest) returns (ParseReply) {}
+}
+
+// The request message containing the LaTeX file content.
+message ParseRequest {
+  string content = 1;
+}
+
+// The response message containing the raw English lines
+message ParseReply {
+  string result = 1;
+}

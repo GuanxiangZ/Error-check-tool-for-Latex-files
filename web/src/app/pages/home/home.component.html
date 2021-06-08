@@ -1,0 +1,185 @@
+<div class="page-container">
+  <div class="buttons-container">
+    <nz-upload
+      #uploadComponent
+      (nzChange)="handleChange($event)"
+      [nzAction]="baseUrl"
+      [nzBeforeUpload]="beforeUpload"
+      [nzData]="response"
+      [nzDisabled]="fileContent.length !== 0"
+      [nzDownload]="downloadFile"
+      [nzHeaders]="{ languageCode: getCurrentLanguageCode(), filename: fileName }"
+      class="upload-container"
+      nzLimit=1
+    >
+      <button nz-button><i nz-icon nzType="upload"></i>Choose a LaTeX file</button>
+    </nz-upload>
+  </div>
+  <div class="select-container">
+    <nz-select [(ngModel)]="currentLanguage" style="min-width: 180px;">
+      <nz-option *ngFor="let name of supportLanguagesName;" [nzLabel]="name" [nzValue]="name"></nz-option>
+    </nz-select>
+  </div>
+  <div #mainContainer (resize)="onResize($event)" class="main-container">
+    <nz-card #previewContainer
+             [style.height.px]="textAreaMaxHeight"
+             [style.width.px]="previewAreaWidth - 10"
+             class="file-preview-container"
+    >
+      <nz-skeleton
+        [nzActive]="true"
+        [nzLoading]="uploading"
+        [nzParagraph]="getSkeletonParagraph(textAreaMaxHeight)"
+        [style.width.px]="previewAreaWidth - 50"
+        class="preview-file-lines-container"
+      >
+        <div
+          *ngFor="let line of lines; let idx = index;"
+          [id]="getLineId(idx)"
+          class="preview-file-line-container"
+        >
+          <div class="preview-file-line-number-style">{{idx + 1}}</div>
+          <pre
+            *ngIf="getLine(idx); else errorLine"
+            [style.width.px]="previewAreaWidth - 90"
+            class="preview-file-line-style"
+          >{{line}}</pre>
+
+          <ng-template #errorLine>
+            <p [style.width.px]="previewAreaWidth - 90" class="preview-file-line-style">
+              <ng-container *ngFor="let seg of getSegments(idx); let errorIdx = index">
+                <span
+                  (click)="clickError(idx, seg.id)"
+                  *ngIf="seg.type==='error'; else normal"
+                  [id]="seg.id"
+                  [ngClass]="getStyle(seg)"
+                >{{seg.text}}</span>
+                <ng-template #normal>
+                  <span class="normal-segment">{{seg.text}}</span>
+                </ng-template>
+              </ng-container>
+            </p>
+          </ng-template>
+        </div>
+      </nz-skeleton>
+    </nz-card>
+
+    <div class="card-gutter"></div>
+    <nz-card
+      [style.height.px]="textAreaMaxHeight"
+      [style.width.px]="previewAreaWidth - 10"
+      class="report-container"
+    >
+      <nz-skeleton
+        [nzActive]="true"
+        [nzLoading]="uploading"
+        [nzParagraph]="getSkeletonRows(textAreaMaxHeight)"
+        [style.width.px]="previewAreaWidth - 50"
+        class="skeleton-container"
+      >
+        <nz-collapse [nzAccordion]="true">
+          <nz-collapse-panel
+            (click)="openCollapse(line)"
+            *ngFor="let line of report.lines"
+            [id]="getReportLineID(line.lineIndex)"
+            [nzActive]="isActive(line.lineIndex)"
+            [nzHeader]="getHeader(line.lineIndex)"
+            style="font-weight: bold;"
+          >
+            <div *ngIf="line.matches && line.matches.length > 0">
+              <nz-collapse>
+                <nz-collapse-panel
+                  (click)="openErrorCollapse($event, match.id)"
+                  *ngFor="let match of line.matches"
+                  [id]="getCollapseErrorID(match.id)"
+                  [nzActive]="match.id === currentFocusError"
+                  [nzExtra]="dismiss"
+                  nzHeader="Issue: {{match.reason}}"
+                >
+                  <p class="statement">
+                    <span class="prompt-font-weight prompt-margin">Sentence:</span>{{ match.matchPreString }} <span
+                    class="error-style">{{ match.errorString }}</span>{{ match.matchPostString }}
+                  </p>
+
+
+                  <div *ngIf="match.replacements && match.replacements.length > 0; else noSuggestion"
+                       class="best-suggestion-container">
+                    <span class="prompt-font-weight prompt-margin">Best Suggestion:</span>
+
+                    <button
+                      (click)="fixError(line.lineIndex, 0, match)"
+                      nz-button
+                      nzType="primary"
+                    >{{match.issueType === 'whitespace' ? 'Remove repeated whitespace' : match.replacements[0].replacementString}}</button>
+                  </div>
+                  <ng-template #noSuggestion>
+                    <div class="best-suggestion-container">
+                      <span class="prompt-font-weight prompt-margin">Best Suggestion:</span>
+                      <span class="no-suggestion">
+                        Sorry, we have no reasonable suggestion for this error.
+                      </span>
+                    </div>
+                  </ng-template>
+
+                  <div class="collapse-container">
+                    <nz-collapse
+                      [nzAccordion]="true"
+                      style="font-weight: bold;"
+                    >
+                      <nz-collapse-panel
+                        nzHeader="Issue Details"
+                      >
+                        <p>
+                          <app-prompt
+                            [statement]="match.issueType"
+                            prompt="Issue Type:"
+                          ></app-prompt>
+                        </p>
+                        <p>
+                          <app-prompt
+                            [statement]="match.issueDescription"
+                            prompt="Issue Description:"
+                          ></app-prompt>
+                        </p>
+                      </nz-collapse-panel>
+                    </nz-collapse>
+                  </div>
+                  <div *ngIf="match.replacements && match.replacements.length > 1" class="collapse-container">
+                    <nz-collapse *ngIf="match.replacements.length > 1" [nzAccordion]="true">
+                      <nz-collapse-panel
+                        nzHeader="Other Suggestions"
+                        style="font-weight: bold;"
+                      >
+                        <div *ngFor="let suggestion of getOtherSuggestions(match.replacements); let replIdx = index"
+                             class="suggestion-container">
+                          <button
+                            (click)="fixError(line.lineIndex, replIdx + 1, match)"
+                            nz-button
+                            nzType="primary"
+                          >
+                            {{suggestion.replacementString}}
+                          </button>
+                        </div>
+                      </nz-collapse-panel>
+                    </nz-collapse>
+                  </div>
+
+                  <ng-template #dismiss>
+                    <i (click)="dismissError($event, line.lineIndex, match)" nz-icon nz-tooltip nzTooltipTitle="Dismiss Error"
+                       nzType="close"></i>
+                  </ng-template>
+                </nz-collapse-panel>
+
+
+              </nz-collapse>
+
+
+            </div>
+          </nz-collapse-panel>
+        </nz-collapse>
+      </nz-skeleton>
+    </nz-card>
+  </div>
+</div>
+
+

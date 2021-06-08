@@ -1,0 +1,13 @@
+# ignore jetbrains workspace file
+**.idea
+
+.github/
+.git/
+proto/
+web/dist/
+**.tex.html
+vendor
+texcheck
+.log
+parser/static/
+
